@@ -5,7 +5,7 @@
 ```
 npm install
 ```
-## 4. Define environment variables
+## 2. Define environment variables
 [get your OPENAI key here](https://platform.openai.com/account/api-keys)
 ```
 export $OPENAI_APIKEY=<YOUR-OPENAI-KEY>
