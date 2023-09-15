@@ -1,6 +1,7 @@
 # Weaviate JS Recipes
 
 ## 1. Install npm packages
+Clone this repository, and install dependencies:
 
 ```
 npm install
@@ -16,7 +17,15 @@ export $OPENAI_APIKEY=<YOUR-OPENAI-KEY>
 export $COHERE_APIKEY=<YOUR-COHERE-KEY>
 ```
 
-## 3. Run a Recipe!
+## 4. Run weaviate
+You can either run Weaviate locally (using docker compose) or in cloud, using [Weaviate Cloud service](https://console.weaviate.cloud/)
+
+For docker, you can run:
+```
+docker compose up -d
+```
+
+## 4. Run a Recipe!
 
 ```
 npm run <recipe>
