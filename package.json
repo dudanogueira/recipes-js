@@ -8,6 +8,7 @@
     "start:dev": "npx nodemon",
     "build": "rimraf ./build && tsc",
     "start": "npm run build && node build/index.js",
+    "lab": "npm run build && node build/lab.js",
     "generative-search-openai": "npm run build && node build/generative-search/generative-search-openai.js"
   },
   "keywords": [],
