@@ -6,23 +6,44 @@ Clone this repository, and install dependencies:
 ```
 npm install
 ```
-## 2. Define environment variables
-[get your OPENAI key here](https://platform.openai.com/account/api-keys)
-```
-export $OPENAI_APIKEY=<YOUR-OPENAI-KEY>
-```
+## 2. Choose where to run Weaviate
 
-[get your COHERE key here](https://dashboard.cohere.com/api-keys)
-```
-export $COHERE_APIKEY=<YOUR-COHERE-KEY>
-```
+### 2.1 Run in Weaviate Cloud Service
 
-## 4. Run weaviate
-You can either run Weaviate locally (using docker compose) or in cloud, using [Weaviate Cloud service](https://console.weaviate.cloud/)
+Head to [WCS](https://console.weaviate.cloud/), where you can easily create a free sandbox cluster. 
+Take note of your `cluster url` and `apiKey`
 
-For docker, you can run:
+### 2.2 Run locally using Docker
+Considering you already have docker installed, you can run:
 ```
 docker compose up -d
+``` 
+**IMPORTANT:** make sure to define the environment variables before runnig docker
+
+## 3. Define environment variables
+[get your OPENAI key here](https://platform.openai.com/account/api-keys)
+
+[get your COHERE key here](https://dashboard.cohere.com/api-keys)
+
+```
+cp .env_example .env
+```
+
+If you are using docker, you can keep it like:
+```
+WEAVIATE_SCHEME_URL=http
+WEAVIATE_URL=localhost:8080
+OPENAI_APIKEY=<your openai apikey>
+COHERE_APIKEY=<your cohere apikey>
+```
+if you are using WCS, you can keep it like:
+
+```
+WEAVIATE_SCHEME_URL=https
+WEAVIATE_URL=<yourcluster.weaviate.network>
+WEAVIATE_API_KEY=<your_apikey>
+OPENAI_APIKEY=<your openai apikey>
+COHERE_APIKEY=<your cohere apikey>
 ```
 
 ## 4. Run a Recipe!
@@ -33,5 +54,7 @@ npm run <recipe>
 
 current available recipes:
 
-- `npm run generative-search-openai`
+- `npm run generative-search/openai`
+- `npm run conditional-filters/containsall`
+- `npm run conditional-filters/containsany`
 - _more coming soon!_

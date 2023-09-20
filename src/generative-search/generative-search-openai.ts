@@ -1,24 +1,20 @@
-import weaviate, { ApiKey, WeaviateClient } from 'weaviate-ts-client';
+import weaviate, { ApiKey, ConnectionParams, WeaviateClient } from 'weaviate-ts-client';
 import axios from 'axios';
-
-  // let's instantiate Weaviate client
-  
+require('dotenv').config();
 
 // Step 1) Connect to Weaviate 
-// Update your connection details for your WCS cluster
-const client: WeaviateClient = weaviate.client({
-  scheme: 'https',
-  host: 'some-endpoint.weaviate.network',  // Replace with your endpoint
-  apiKey: new ApiKey('YOUR-WEAVIATE-API-KEY'),  // Replace w/ your Weaviate instance API key
-  headers: { 'X-OpenAI-Api-Key': 'YOUR-OPENAI-API-KEY' },  // Replace with your inference API key
-});
+// If you want to use WCS, define the environment variables
+var connection_config:ConnectionParams = {
+  scheme: process.env.WEAVIATE_SCHEME_URL || 'http',
+  host: process.env.WEAVIATE_URL || 'localhost:8080',  
+  headers: { 'X-OpenAI-Api-Key': process.env.OPENAI_API_KEY },  // Replace with your inference API key
+}
+if(process.env.WEAVIATE_API_KEY){
+  connection_config["apiKey"] = new ApiKey(process.env.WEAVIATE_API_KEY)  // Replace w/ your Weaviate instance API key;
+}
 
-// Alternatively, use the below code if you use Weavite with Docker 
-// const client: WeaviateClient = weaviate.client({
-//     scheme: 'http',
-//     host: 'localhost:8080',
-//     headers: { 'X-OpenAI-Api-Key': 'YOUR-OPENAI-API-KEY' },
-// });
+console.log("Connecting with:", connection_config)
+const client: WeaviateClient = weaviate.client(connection_config);
 
 // Step 2 – create a new collection for your data and vectors
 async function createCollection() {
@@ -94,7 +90,7 @@ async function importData() {
 async function singlePrompt(query: string, prompt: string) {
   const singlePrompt = await client.graphql.get()
     .withClassName('JeopardyQuestion')
-    .withFields('question category')
+    .withFields('question category answer')
     .withNearText({
       concepts: [query],
     })
@@ -107,11 +103,9 @@ async function singlePrompt(query: string, prompt: string) {
   console.log('Single Prompt response:', JSON.stringify(singlePrompt, null, 2))
 }
 
-
-
 async function runFullExample() {
-  // uncomment this code if you want to force recreating the collection
-  // await deleteCollection();
+  // comment this the line bellow dont want your class to be deleted.
+  await deleteCollection();
 
   if(await collectionExists() == false) {
     await createCollection();
