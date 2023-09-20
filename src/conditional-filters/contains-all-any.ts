@@ -1,6 +1,10 @@
 import weaviate, { ApiKey, ConnectionParams, WeaviateClient } from 'weaviate-ts-client';
 require('dotenv').config();
 
+
+// TODO: can we make the client connection simpler?
+// This looks more complicated than it should be :p
+
 // Step 1) Connect to Weaviate 
 // If you want to use WCS, define the environment variables
 const connection_config: ConnectionParams = {
@@ -39,7 +43,7 @@ async function createCollection() {
 // Step 3 – import data into your collection
 async function importData() {
     let data = [
-        { "question": "question with tag A, B and C", "tags": ["tagA", "tagB", "tagC"], "wordCount": 2000 },
+        { "question": "question with tags A, B and C", "tags": ["tagA", "tagB", "tagC"], "wordCount": 2000 },
         { "question": "question with tags B and C", "tags": ["tagB", "tagC"], "wordCount": 1001 },
         { "question": "question with tags A and C", "tags": ["tagA", "tagC"], "wordCount": 500 }
     ]
@@ -85,7 +89,7 @@ async function searchAnyTags(tags: string[]) {
 
 // Step 5 - run the full example
 async function runFullExample() {
-    // comment this the line bellow dont want your class to be deleted.
+    // comment this the line bellow if you don't want your class to be deleted each time.
     // await deleteCollection();
 
     if (await collectionExists() == false) {
