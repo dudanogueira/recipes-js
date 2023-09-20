@@ -1,22 +1,36 @@
 import weaviate, { ApiKey, ConnectionParams, WeaviateClient } from 'weaviate-ts-client';
 require('dotenv').config();
 
-
 // TODO: can we make the client connection simpler?
 // This looks more complicated than it should be :p
 
 // Step 1) Connect to Weaviate 
 // If you want to use WCS, define the environment variables
-const connection_config: ConnectionParams = {
-    scheme: process.env.WEAVIATE_SCHEME_URL || 'http',
-    host: process.env.WEAVIATE_URL || 'localhost:8080',
-}
-if (process.env.WEAVIATE_API_KEY) {
-    connection_config["apiKey"] = new ApiKey(process.env.WEAVIATE_API_KEY)  // Replace w/ your Weaviate instance API key;
-}
+// const connection_config: ConnectionParams = {
+//     scheme: process.env.WEAVIATE_SCHEME_URL || 'http',
+//     host: process.env.WEAVIATE_URL || 'localhost:8080',
+// }
+// if (process.env.WEAVIATE_API_KEY) {
+//     connection_config["apiKey"] = new ApiKey(process.env.WEAVIATE_API_KEY)  // Replace w/ your Weaviate instance API key;
+// }
 
-console.log("Connecting with:", connection_config)
-const client: WeaviateClient = weaviate.client(connection_config);
+// console.log("Connecting with:", connection_config)
+// const client: WeaviateClient = weaviate.client(connection_config);
+
+// Step 1) Connect to Weaviate 
+// Connect to your WCS instance
+const client: WeaviateClient = weaviate.client({
+    scheme: 'https',
+    host: 'some-endpoint.weaviate.network',      // Replace with your endpoint
+    apiKey: new ApiKey('YOUR-WEAVIATE-API-KEY'), // Replace w/ your Weaviate instance API key
+});
+console.log("Connecting to Weaviate.")
+
+// Alternatively, connect to your local Weaviate.
+// const client: WeaviateClient = weaviate.client({
+//     scheme: 'http',
+//     host: 'localhost:8080',
+// });
 
 // Step 2 – create a new collection for your data and vectors
 async function createCollection() {
