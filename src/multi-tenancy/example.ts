@@ -38,14 +38,17 @@ async function runFullExample() {
     // Search data from tenantA
     let objects_tenantA = await getTenantObjects("tenantA");
     console.log("Objects listed in tenantA", JSON.stringify(objects_tenantA, null, 2));
+
     // Search data from tenantB
     let objects_tenantB = await getTenantObjects("tenantB");
     console.log("Objects listed in tenantB", JSON.stringify(objects_tenantB, null, 2));
+
     // Let's list all tenants from our class
     let tenants_in_class = await client.schema
         .tenantsGetter("MultiTenancyClass")
         .do();
     console.log("Tenants in our class ", tenants_in_class)
+
     // let's "freeze" our TenantB, so it will not be readable nor writable
     // marking tenants as "COLD" will save resources in Weaviate
     let free_tenant_b = await client.schema
@@ -56,13 +59,22 @@ async function runFullExample() {
             ]
         ).do();
     console.log("TenantB should be frozen now ", free_tenant_b)
+
     // lets try
-    try{
+    try {
         await getTenantObjects("tenantB");
-    }catch(e){
+    } catch (e) {
         console.log("Error: ", e)
 
     }
+
+    let query = await client.schema
+        .tenantsUpdater(
+            "MultiTenancyClass",
+            [
+                { name: "tenantB", activityStatus: "COLD" }
+            ]
+        );
 }
 
 runFullExample()
