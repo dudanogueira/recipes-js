@@ -50,14 +50,7 @@ async function runFullExample() {
         await createCollection();
         await importData();
     }
-
-    //ContainsAll examples for question_id
-    // const docs_id_1_2 = await searchAll(["reference-id-1", "reference-id-2"], ["question_id"]);
-    // console.log("Docs that contains ALL provided question_id: reference-id-1 and 2:", JSON.stringify(docs_id_1_2, null, 2))
-
-    // const docs_id_1_10 = await searchAll(["reference-id-1", "reference-id-10"], ["question_id"]);
-    // console.log("Docs that contains ALL provided question_id: reference-id-1 and 10:", JSON.stringify(docs_id_1_10, null, 2))
-
+    
     // ContainsAll examples for tags
     const docs_tags_bc = await searchAll(["tagB", "tagC"], ["tags"]);
     console.log("Docs that contains ALL provided tags: tagB and tagC:", JSON.stringify(docs_tags_bc, null, 2))
