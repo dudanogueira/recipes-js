@@ -25,14 +25,13 @@ services:
       DEFAULT_VECTORIZER_MODULE: 'text2vec-openai'
       ENABLE_MODULES: 'text2vec-openai,generative-openai'
       CLUSTER_HOSTNAME: 'node1'
-      # enable apikey
-      # # Enables API key authentication.
-      # AUTHENTICATION_APIKEY_ENABLED: 'true'
-      # # List one or more keys, separated by commas. Each key corresponds to a specific user identity below.
-      # AUTHENTICATION_APIKEY_ALLOWED_KEYS: 'someapikey'
-      # # List one or more user identities, separated by commas. Each identity corresponds to a specific key above.
-      # AUTHENTICATION_APIKEY_USERS: 'jane@doe.com'
-      # AUTHORIZATION_ADMINLIST_ENABLED: 'true'
-      # AUTHORIZATION_ADMINLIST_USERS: 'jane@doe.com'
-      # AUTHORIZATION_ADMINLIST_READONLY_USERS: 'someapikey'
+      # Enables API key authentication.
+      AUTHENTICATION_APIKEY_ENABLED: 'true'
+      # List one or more keys, separated by commas. Each key corresponds to a specific user identity below.
+      AUTHENTICATION_APIKEY_ALLOWED_KEYS: 'YOUR-WEAVIATE-API-KEY'
+      # List one or more user identities, separated by commas. Each identity corresponds to a specific key above.
+      AUTHENTICATION_APIKEY_USERS: 'jane@doe.com'
+      AUTHORIZATION_ADMINLIST_ENABLED: 'true'
+      AUTHORIZATION_ADMINLIST_USERS: 'jane@doe.com'
+      AUTHORIZATION_ADMINLIST_READONLY_USERS: 'YOUR-WEAVIATE-API-KEY'
 ...
