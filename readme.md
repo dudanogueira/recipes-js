@@ -55,6 +55,7 @@ npm run <recipe>
 current available recipes:
 
 - `npm run generative-search/openai`
-- `npm run conditional-filters/containsall`
-- `npm run conditional-filters/containsany`
+- `npm run generative-search/cohere`
+- `npm run conditional-filters/containsany-all-any`
+- `npm run multi-tenancy/example`
 - _more coming soon!_

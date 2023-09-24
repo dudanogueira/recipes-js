@@ -3,7 +3,7 @@ require('dotenv').config();
 
 // Connect to Weaviate
 
-// This is the simplest way to connect to Weaviate
+// This is the simplest way to connect to a local Weaviate
 // const client: WeaviateClient = weaviate.client({
 //     scheme: 'http',
 //     host: 'localhost:8080',
@@ -50,7 +50,7 @@ async function runFullExample() {
         await createCollection();
         await importData();
     }
-    
+
     // ContainsAll examples for tags
     const docs_tags_bc = await searchAll(["tagB", "tagC"], ["tags"]);
     console.log("Docs that contains ALL provided tags: tagB and tagC:", JSON.stringify(docs_tags_bc, null, 2))
@@ -65,6 +65,20 @@ async function runFullExample() {
     // ContainsAny example tags
     const docs_tags_AW = await searchAny(["tagA", "tagW"], ["tags"]);
     console.log("Docs that contains ANY of the tags: tagA and tagW:", JSON.stringify(docs_tags_AW, null, 2))
+
+    // TODO: check better way for this kind of search
+    // If you want to get the Documents that has exactly tagB and tagC, 
+    // You need to use Equal, for example
+    // const exact_tags = client.graphql
+    //     .get()
+    //     .withClassName("Document")
+    //     .withFields("question tags question_id")
+    //     .withWhere({
+    //         operator: 'Equal',
+    //         path: ["tags"],
+    //         valueTextArray: ["tagB", "tagC"],
+    //     }).do();
+    // console.log("Docs with exactly tagB and tagC, using the Equal operator", exact_tags)
 
 }
 
