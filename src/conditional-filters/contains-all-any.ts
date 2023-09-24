@@ -1,38 +1,84 @@
-import weaviate, { ApiKey, ConnectionParams, WeaviateClient } from 'weaviate-ts-client';
+import weaviate, { ApiKey, WeaviateClient, generateUuid5 } from 'weaviate-ts-client';
 require('dotenv').config();
 
-// TODO: can we make the client connection simpler?
-// This looks more complicated than it should be :p
+// Connect to Weaviate
 
-// Step 1) Connect to Weaviate 
-// If you want to use WCS, define the environment variables
-// const connection_config: ConnectionParams = {
-//     scheme: process.env.WEAVIATE_SCHEME_URL || 'http',
-//     host: process.env.WEAVIATE_URL || 'localhost:8080',
-// }
-// if (process.env.WEAVIATE_API_KEY) {
-//     connection_config["apiKey"] = new ApiKey(process.env.WEAVIATE_API_KEY)  // Replace w/ your Weaviate instance API key;
-// }
-
-// console.log("Connecting with:", connection_config)
-// const client: WeaviateClient = weaviate.client(connection_config);
-
-// Step 1) Connect to Weaviate 
-// Connect to your WCS instance
-const client: WeaviateClient = weaviate.client({
-    scheme: 'https',
-    host: 'some-endpoint.weaviate.network',      // Replace with your endpoint
-    apiKey: new ApiKey('YOUR-WEAVIATE-API-KEY'), // Replace w/ your Weaviate instance API key
-});
-console.log("Connecting to Weaviate.")
-
-// Alternatively, connect to your local Weaviate.
+// This is the simplest way to connect to Weaviate
 // const client: WeaviateClient = weaviate.client({
 //     scheme: 'http',
 //     host: 'localhost:8080',
 // });
 
-// Step 2 – create a new collection for your data and vectors
+// in order to work with ENVIRONMENT VARIABLES and use an APIKEY, you can use
+const client: WeaviateClient = weaviate.client({
+    scheme: process.env.WEAVIATE_SCHEME_URL || 'http', // Replace with https if using WCS
+    host: process.env.WEAVIATE_URL || 'localhost:8080', // Replace with your Weaviate URL
+    apiKey: new ApiKey(process.env.WEAVIATE_API_KEY || 'YOUR-WEAVIATE-API-KEY'), // Replace with your Weaviate API key
+});
+
+// ContainsAll query
+async function searchAll(items: string[], path: string[]) {
+    return client.graphql
+        .get()
+        .withClassName("Document")
+        .withFields("question tags question_id")
+        .withWhere({
+            operator: 'ContainsAll',
+            path: path,
+            valueTextArray: items,
+        }).do();
+}
+
+// ContainsAny query
+async function searchAny(tags: string[], path: string[]) {
+    return client.graphql
+        .get()
+        .withClassName("Document")
+        .withFields("question tags question_id")
+        .withWhere({
+            operator: 'ContainsAny',
+            path: path,
+            valueTextArray: tags,
+        }).do();
+}
+
+async function runFullExample() {
+    // comment this the line bellow if you don't want your class to be deleted each time.
+    await deleteCollection();
+
+    if (await collectionExists() == false) {
+        await createCollection();
+        await importData();
+    }
+
+    //ContainsAll examples for question_id
+    // const docs_id_1_2 = await searchAll(["reference-id-1", "reference-id-2"], ["question_id"]);
+    // console.log("Docs that contains ALL provided question_id: reference-id-1 and 2:", JSON.stringify(docs_id_1_2, null, 2))
+
+    // const docs_id_1_10 = await searchAll(["reference-id-1", "reference-id-10"], ["question_id"]);
+    // console.log("Docs that contains ALL provided question_id: reference-id-1 and 10:", JSON.stringify(docs_id_1_10, null, 2))
+
+    // ContainsAll examples for tags
+    const docs_tags_bc = await searchAll(["tagB", "tagC"], ["tags"]);
+    console.log("Docs that contains ALL provided tags: tagB and tagC:", JSON.stringify(docs_tags_bc, null, 2))
+
+    const docs_tags_ac = await searchAll(["tagA", "tagC"], ["tags"]);
+    console.log("Docs that contains ALL provided tags: tagA and tagC:", JSON.stringify(docs_tags_ac, null, 2))
+
+    const docs_tags_ad = await searchAll(["tagA", "tagD"], ["tags"]);
+    // this will return an empty response, as there is no document with tagD
+    console.log("Docs that contains ALL provided tags: tagA and tagD:", JSON.stringify(docs_tags_ad, null, 2))
+
+    // ContainsAny example tags
+    const docs_tags_AW = await searchAny(["tagA", "tagW"], ["tags"]);
+    console.log("Docs that contains ANY of the tags: tagA and tagW:", JSON.stringify(docs_tags_AW, null, 2))
+
+}
+
+runFullExample()
+
+// ------------------------- Helper functions
+// Create a new collection for your data and vectors
 async function createCollection() {
     // Define collection configuration.
     const schema_definition = {
@@ -40,12 +86,16 @@ async function createCollection() {
         "vectorizer": "none",
         "properties": [
             {
+                "name": "question_id",
+                "dataType": ["text"]
+            },
+            {
                 "name": "question",
                 "dataType": ["text"]
             },
             {
                 "name": "tags",
-                "dataType": ["text[]"] // a list of texts
+                "dataType": ["text[]"], // a list of texts
             }
         ],
     }
@@ -54,18 +104,20 @@ async function createCollection() {
     console.log('We have a new class!', new_class['class'])
 }
 
-// Step 3 – import data into your collection
+// Import data into your collection
 async function importData() {
     let data = [
-        { "question": "question with tags A, B and C", "tags": ["tagA", "tagB", "tagC"], "wordCount": 2000 },
-        { "question": "question with tags B and C", "tags": ["tagB", "tagC"], "wordCount": 1001 },
-        { "question": "question with tags A and C", "tags": ["tagA", "tagC"], "wordCount": 500 }
+        { "question_id": "reference-id-1", "question": "question with tags A, B and C", "tags": ["tagA", "tagB", "tagC"], "wordCount": 2000 },
+        { "question_id": "reference-id-2", "question": "question with tags B and C", "tags": ["tagB", "tagC"], "wordCount": 1001 },
+        { "question_id": "reference-id-3", "question": "question with tags A and C", "tags": ["tagA", "tagC"], "wordCount": 500 }
     ]
 
+    console.log("Let's import this data", JSON.stringify(data, null, 2))
     let batcher = client.batch.objectsBatcher();
 
     for (const dataObj of data) {
         batcher = batcher.withObject({
+            //id: generateUuid5(dataObj.question),
             class: 'Document',
             properties: dataObj,
         });
@@ -76,62 +128,7 @@ async function importData() {
     console.log('Data Imported');
 }
 
-// Step 4 – run a ContainsAll query
-async function searchAllTags(tags: string[]) {
-    return client.graphql
-        .get()
-        .withClassName("Document")
-        .withFields("question tags")
-        .withWhere({
-            operator: 'ContainsAny',
-            path: ["tags"],
-            valueTextArray: tags,
-        }).do();
-}
-
-async function searchAnyTags(tags: string[]) {
-    return client.graphql
-        .get()
-        .withClassName("Document")
-        .withFields("question tags")
-        .withWhere({
-            operator: 'ContainsAny',
-            path: ["tags"],
-            valueTextArray: tags,
-        }).do();
-}
-
-// Step 5 - run the full example
-async function runFullExample() {
-    // comment this the line bellow if you don't want your class to be deleted each time.
-    // await deleteCollection();
-
-    if (await collectionExists() == false) {
-        await createCollection();
-        await importData();
-    }
-
-    // ContainsAll examples
-    const docs_tags_bc = await searchAllTags(["tagB", "tagC"]);
-    console.log("Docs that contains ALL provided tags: tags tagB and tagC:", JSON.stringify(docs_tags_bc, null, 2))
-    
-    const docs_tags_ac = await searchAllTags(["tagA", "tagC"]);
-    console.log("Docs that contains ALL provided tags: tagA and tagC:", JSON.stringify(docs_tags_ac, null, 2))
-    
-    const docs_tags_ad = await searchAllTags(["tagA", "tagD"]);
-    // this will return an empty response, as there is no document with tagD
-    console.log("Docs that contains ALL provided tags: tagA and tagD:", JSON.stringify(docs_tags_ad, null, 2))
-    
-    // ContainsAny example
-    const docs_tags_AW = await searchAnyTags(["tagA", "tagW"]);
-    console.log("Docs that contains ANY of the tags: tagA and tagW:", JSON.stringify(docs_tags_AW, null, 2))
-}
-
-runFullExample()
-
-// ------------------------- Helper functions
-
-// Helper function to check if collection exists
+// Check if collection exists
 async function collectionExists() {
     return client.schema.exists('Document')
 }
