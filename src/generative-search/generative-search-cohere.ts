@@ -8,7 +8,7 @@ require('dotenv').config();
 // const client: WeaviateClient = weaviate.client({
 //     scheme: 'http',
 //     host: 'localhost:8080',
-//     headers: { 'X-OpenAI-Api-Key': <YOUR-OPENAI_API_KEY> },  // Replace with your inference API key
+//     headers: { 'X-Cohere-Api-Key': <YOUR-COHERE-APIKEY> },  // Replace with your inference API key
 // });
 
 // in order to work with ENVIRONMENT VARIABLES and use an APIKEY, you can use
@@ -16,7 +16,7 @@ const client: WeaviateClient = weaviate.client({
   scheme: process.env.WEAVIATE_SCHEME_URL || 'http', // Replace with https if using WCS
   host: process.env.WEAVIATE_URL || 'localhost:8080', // Replace with your Weaviate URL
   apiKey: new ApiKey(process.env.WEAVIATE_API_KEY || 'YOUR-WEAVIATE-API-KEY'), // Replace with your Weaviate API key
-  headers: { 'X-OpenAI-Api-Key': process.env.OPENAI_API_KEY },  // Replace with your inference API key
+  headers: { 'X-Cohere-Api-Key': process.env.COHERE_API_KEY },  // Replace with your inference API key
 });
 
 // run RAG/Generative Search query with single prompt
@@ -92,10 +92,11 @@ async function createCollection() {
   const schema_definition = {
     class: 'JeopardyQuestion',
     description: 'List of jeopardy questions',
-    vectorizer: 'text2vec-openai',
+    vectorizer: 'text2vec-cohere',
     moduleConfig: {
-      'generative-openai': {
-        'model': 'gpt-3.5-turbo',  // Optional - Defaults to `gpt-3.5-turbo`
+      'generative-cohere': {
+        'model': 'command-xlarge-nightly',  // Optional - Defaults to `command-xlarge-nightly`. 
+        // Can also use`command-xlarge-beta` and `command-xlarge`
       }
     },
     properties: [
