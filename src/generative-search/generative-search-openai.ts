@@ -2,21 +2,91 @@ import weaviate, { ApiKey, ConnectionParams, WeaviateClient } from 'weaviate-ts-
 import axios from 'axios';
 require('dotenv').config();
 
-// Step 1) Connect to Weaviate 
-// If you want to use WCS, define the environment variables
-var connection_config:ConnectionParams = {
-  scheme: process.env.WEAVIATE_SCHEME_URL || 'http',
-  host: process.env.WEAVIATE_URL || 'localhost:8080',  
+// Connect to Weaviate
+
+// This is the simplest way to connect to Weaviate
+// const client: WeaviateClient = weaviate.client({
+//     scheme: 'http',
+//     host: 'localhost:8080',
+//     headers: { 'X-OpenAI-Api-Key': <YOUR-OPENAI_API_KEY> },  // Replace with your inference API key
+// });
+
+// in order to work with ENVIRONMENT VARIABLES and use an APIKEY, you can use
+const client: WeaviateClient = weaviate.client({
+  scheme: process.env.WEAVIATE_SCHEME_URL || 'http', // Replace with https if using WCS
+  host: process.env.WEAVIATE_URL || 'localhost:8080', // Replace with your Weaviate URL
+  apiKey: new ApiKey(process.env.WEAVIATE_API_KEY || 'YOUR-WEAVIATE-API-KEY'), // Replace with your Weaviate API key
   headers: { 'X-OpenAI-Api-Key': process.env.OPENAI_API_KEY },  // Replace with your inference API key
-}
-if(process.env.WEAVIATE_API_KEY){
-  connection_config["apiKey"] = new ApiKey(process.env.WEAVIATE_API_KEY)  // Replace w/ your Weaviate instance API key;
+});
+
+// run RAG/Generative Search query with single prompt
+async function singlePrompt(query: string, prompt: string) {
+  const response = await client.graphql.get()
+    .withClassName('JeopardyQuestion')
+    .withFields('question category answer')
+    .withNearText({
+      concepts: [query],
+    })
+    .withGenerate({
+      singlePrompt: prompt,
+    })
+    .withLimit(2)
+    .do();
+
+  console.log('Single Prompt response:', JSON.stringify(response, null, 2))
 }
 
-console.log("Connecting with:", connection_config)
-const client: WeaviateClient = weaviate.client(connection_config);
+// run RAG/Generative Search query as a grouped Task
+async function GroupedTask(query: string, prompt: string, properties: string[]) {
+  let response = await client.graphql.get()
+    .withClassName('JeopardyQuestion')
+    .withFields('question category answer')
+    .withNearText({
+      concepts: [query],
+    })
+    .withGenerate({
+      groupedTask: prompt,
+      groupedProperties: properties
+    })
+    .do();
 
-// Step 2 – create a new collection for your data and vectors
+  let groupedtask_answer = response["data"]["Get"]["JeopardyQuestion"][0]["_additional"]["generate"]["groupedResult"]
+  console.log(`Grouped Task response for query (${query})`, groupedtask_answer)
+}
+
+
+async function runFullExample() {
+  // comment this the line bellow if you don't want your class to be deleted each run.
+  await deleteCollection();
+  if(await collectionExists() == false) {
+    // lets create and import our collection
+    await createCollection();
+    await importData();
+  }
+
+  await singlePrompt('Elephants', 'Turn the following Jeopardy question into a Facebook Ad: {question}.');
+  await GroupedTask('Australian Animals', 'What do these animals have in common, if anything?', ["question", "answer"] )
+}
+
+runFullExample().then()
+
+// ------------------------- Helper functions
+
+// Helper function to check if collection exists
+async function collectionExists() {
+  return client.schema.exists('JeopardyQuestion')
+}
+
+// Helper function to delete the collection
+async function deleteCollection() {
+  // Delete the collection if it already exists
+  if(await collectionExists()) {
+    console.log('DELETING')
+    await client.schema.classDeleter().withClassName('JeopardyQuestion').do();
+  }
+}
+
+// Create a new collection for your data and vectors
 async function createCollection() {
   // Define collection configuration - vectorizer, generative module and data schema
   const schema_definition = {
@@ -52,7 +122,7 @@ async function createCollection() {
   console.log('We have a new class!', new_class['class'])
 }
 
-// Step 3 – import data into your collection
+// import data into your collection
 async function importData() {
   // now is time to import some data
   // first, let's grab our Jeopardy Questions from the interwebs
@@ -86,49 +156,4 @@ async function importData() {
   console.log('Data Imported');
 }
 
-// Step 4 – run RAG query with single prompt
-async function singlePrompt(query: string, prompt: string) {
-  const singlePrompt = await client.graphql.get()
-    .withClassName('JeopardyQuestion')
-    .withFields('question category answer')
-    .withNearText({
-      concepts: [query],
-    })
-    .withGenerate({
-      singlePrompt: prompt,
-    })
-    .withLimit(2)
-    .do();
 
-  console.log('Single Prompt response:', JSON.stringify(singlePrompt, null, 2))
-}
-
-async function runFullExample() {
-  // comment this the line bellow dont want your class to be deleted.
-  await deleteCollection();
-
-  if(await collectionExists() == false) {
-    await createCollection();
-    await importData();
-  }
-
-  await singlePrompt('Elephants', 'Turn the following Jeopardy question into a Facebook Ad: {question}.');
-}
-
-runFullExample().then()
-
-// ------------------------- Helper functions
-
-// Helper function to check if collection exists
-async function collectionExists() {
-  return client.schema.exists('JeopardyQuestion')
-}
-
-// Helper function to delete the collection
-async function deleteCollection() {
-  // Delete the collection if it already exists
-  if(await collectionExists()) {
-    console.log('DELETING')
-    await client.schema.classDeleter().withClassName('JeopardyQuestion').do();
-  }
-}

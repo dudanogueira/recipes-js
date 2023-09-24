@@ -43,9 +43,9 @@ async function searchAny(tags: string[], path: string[]) {
 }
 
 async function runFullExample() {
-    // comment this the line bellow if you don't want your class to be deleted each time.
+    // comment this the line bellow if you don't want your class to be deleted each run.
     await deleteCollection();
-
+    // lets create and import our collection
     if (await collectionExists() == false) {
         await createCollection();
         await importData();
