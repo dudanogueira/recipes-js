@@ -10,8 +10,7 @@
     "start": "npm run build && node build/index.js",
     "lab": "npm run build && node build/lab.js",
     "generative-search/openai": "npm run build && node build/generative-search/generative-search-openai.js",
-    "conditional-filters/containsall": "npm run build && node build/conditional-filters/contains-all.js",
-    "conditional-filters/containsany": "npm run build && node build/conditional-filters/contains-any.js"
+    "conditional-filters/containsany-all-any": "npm run build && node build/conditional-filters/contains-all-any.js"
   },
   "keywords": [],
   "author": "",
