@@ -16,6 +16,7 @@ const client: WeaviateClient = weaviate.client({
     apiKey: new ApiKey(process.env.WEAVIATE_API_KEY || 'YOUR-WEAVIATE-API-KEY'), // Replace with your Weaviate API key
 });
 
+// This is how you query objects, specifying the tenant
 async function getTenantObjects(tenant: string) {
     return client.graphql
         .get()
@@ -23,6 +24,36 @@ async function getTenantObjects(tenant: string) {
         .withClassName("MultiTenancyClass")
         .withTenant(tenant) // this how we specify the tenant
         .do();
+}
+
+// That will only work when you enable Multitenancy in your class and
+// intentionally add tentants to it:
+async function createCollection() {
+    // Define collection configuration.
+    const schema_definition = {
+        "class": "MultiTenancyClass",
+        "vectorizer": "none",
+        'multiTenancyConfig': { 'enabled': true }, // here we enable Multitenancy
+        "properties": [
+            {
+                "name": "question",
+                "dataType": ["text"]
+            },
+            {
+                "name": "tags",
+                "dataType": ["text[]"], // a list of texts
+            }
+        ],
+    }
+    // let's create it
+    let new_class = await client.schema.classCreator().withClass(schema_definition).do()
+    console.log('We have a new class!', new_class['class'])
+    // now, let's add our Tenant to this class
+    let tenants = await client.schema
+        .tenantsCreator('MultiTenancyClass', [{ name: 'tenantA' }, { name: 'tenantB' }])
+        .do();
+    console.log('We have added two tenants to our class:', tenants)
+
 }
 
 async function runFullExample() {
@@ -51,14 +82,14 @@ async function runFullExample() {
 
     // let's "freeze" our TenantB, so it will not be readable nor writable
     // marking tenants as "COLD" will save resources in Weaviate
-    let free_tenant_b = await client.schema
+    let freeze_tenant_b = await client.schema
         .tenantsUpdater(
             "MultiTenancyClass",
             [
                 { name: "tenantB", activityStatus: "COLD" }
             ]
         ).do();
-    console.log("TenantB should be frozen now ", free_tenant_b)
+    console.log("TenantB should be frozen now ", freeze_tenant_b)
 
     // lets try
     try {
@@ -68,46 +99,12 @@ async function runFullExample() {
 
     }
 
-    let query = await client.schema
-        .tenantsUpdater(
-            "MultiTenancyClass",
-            [
-                { name: "tenantB", activityStatus: "COLD" }
-            ]
-        );
 }
 
 runFullExample()
 
 // ------------------------- Helper functions
-// Create a new collection for your data and vectors
-async function createCollection() {
-    // Define collection configuration.
-    const schema_definition = {
-        "class": "MultiTenancyClass",
-        "vectorizer": "none",
-        'multiTenancyConfig': { 'enabled': true }, // here we enable Multitenancy
-        "properties": [
-            {
-                "name": "question",
-                "dataType": ["text"]
-            },
-            {
-                "name": "tags",
-                "dataType": ["text[]"], // a list of texts
-            }
-        ],
-    }
-    // let's create it
-    let new_class = await client.schema.classCreator().withClass(schema_definition).do()
-    console.log('We have a new class!', new_class['class'])
-    // now, let's add our Tenant to this class
-    let tenants = await client.schema
-        .tenantsCreator('MultiTenancyClass', [{ name: 'tenantA' }, { name: 'tenantB' }])
-        .do();
-    console.log('We have added two tenants to our class:', tenants)
 
-}
 
 // Import data into your collection
 async function importData() {
