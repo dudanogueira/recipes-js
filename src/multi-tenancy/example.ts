@@ -46,13 +46,13 @@ async function createCollection() {
         ],
     }
     // let's create it
-    let new_class = await client.schema.classCreator().withClass(schema_definition).do()
-    console.log('We have a new class!', new_class['class'])
+    let new_class = await client.schema.classCreator().withClass(schema_definition).do();
+    console.log('We have a new class!', new_class['class']);
     // now, let's add our Tenant to this class
     let tenants = await client.schema
         .tenantsCreator('MultiTenancyClass', [{ name: 'tenantA' }, { name: 'tenantB' }])
         .do();
-    console.log('We have added two tenants to our class:', tenants)
+    console.log('We have added two tenants to our class:', tenants);
 
 }
 
@@ -78,7 +78,7 @@ async function runFullExample() {
     let tenants_in_class = await client.schema
         .tenantsGetter("MultiTenancyClass")
         .do();
-    console.log("Tenants in our class ", tenants_in_class)
+    console.log("Tenants in our class ", tenants_in_class);
 
     // let's "freeze" our TenantB, so it will not be readable nor writable
     // marking tenants as "COLD" will save resources in Weaviate
@@ -89,19 +89,19 @@ async function runFullExample() {
                 { name: "tenantB", activityStatus: "COLD" }
             ]
         ).do();
-    console.log("TenantB should be frozen now ", freeze_tenant_b)
+    console.log("TenantB should be frozen now ", freeze_tenant_b);
 
     // lets try
     try {
         await getTenantObjects("tenantB");
     } catch (e) {
-        console.log("Error: ", e)
+        console.log("Error: ", e);
 
     }
 
 }
 
-runFullExample()
+runFullExample();
 
 // ------------------------- Helper functions
 
@@ -111,10 +111,10 @@ async function importData() {
     let data_tenantA = [
         { "question_id": "reference-id-1", "question": "question from tenantA with tags A, B and C", "tags": ["tagA", "tagB", "tagC"], "wordCount": 2000 },
         { "question_id": "reference-id-2", "question": "question from tenantA  with tags B and C", "tags": ["tagB", "tagC"], "wordCount": 1001 },
-    ]
+    ];
     let data_tenantB = [
         { "question_id": "reference-id-3", "question": "question from tenantB with tags A and C", "tags": ["tagA", "tagC"], "wordCount": 500 }
-    ]
+    ];
 
     var batcher = client.batch.objectsBatcher();
 
@@ -152,7 +152,7 @@ async function importData() {
 
 // Check if collection exists
 async function collectionExists() {
-    return client.schema.exists('MultiTenancyClass')
+    return client.schema.exists('MultiTenancyClass');
 }
 
 // Helper function to delete the collection

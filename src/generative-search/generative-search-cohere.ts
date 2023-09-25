@@ -19,73 +19,6 @@ const client: WeaviateClient = weaviate.client({
   headers: { 'X-Cohere-Api-Key': process.env.COHERE_API_KEY },  // Replace with your inference API key
 });
 
-// run RAG/Generative Search query with single prompt
-async function singlePrompt(query: string, prompt: string) {
-  const response = await client.graphql.get()
-    .withClassName('JeopardyQuestion')
-    .withFields('question category answer')
-    .withNearText({
-      concepts: [query],
-    })
-    .withGenerate({
-      singlePrompt: prompt,
-    })
-    .withLimit(2)
-    .do();
-
-  console.log('Single Prompt response:', JSON.stringify(response, null, 2))
-}
-
-// run RAG/Generative Search query as a grouped Task
-async function GroupedTask(query: string, prompt: string, properties?: string[]) {
-  let response = await client.graphql.get()
-    .withClassName('JeopardyQuestion')
-    .withFields('question category answer')
-    .withNearText({
-      concepts: [query],
-    })
-    .withGenerate({
-      groupedTask: prompt,
-      groupedProperties: properties
-    })
-    .do();
-
-  let groupedtask_answer = response["data"]["Get"]["JeopardyQuestion"][0]["_additional"]["generate"]["groupedResult"]
-  console.log(`Grouped Task response for query (${query})`, groupedtask_answer)
-}
-
-
-async function runFullExample() {
-  // comment this the line bellow if you don't want your class to be deleted each run.
-  await deleteCollection();
-  if(await collectionExists() == false) {
-    // lets create and import our collection
-    await createCollection();
-    await importData();
-  }
-
-  await singlePrompt('Elephants', 'Turn the following Jeopardy question into a Facebook Ad: {question}.');
-  await GroupedTask('Animals', 'Explain why these Jeopardy questions are under the Animals category.')
-}
-
-runFullExample().then()
-
-// ------------------------- Helper functions
-
-// Helper function to check if collection exists
-async function collectionExists() {
-  return client.schema.exists('JeopardyQuestion')
-}
-
-// Helper function to delete the collection
-async function deleteCollection() {
-  // Delete the collection if it already exists
-  if(await collectionExists()) {
-    console.log('DELETING')
-    await client.schema.classDeleter().withClassName('JeopardyQuestion').do();
-  }
-}
-
 // Create a new collection for your data and vectors
 async function createCollection() {
   // Define collection configuration - vectorizer, generative module and data schema
@@ -118,18 +51,87 @@ async function createCollection() {
     ]
   }
   // let's create it
-  let new_class = await client.schema.classCreator().withClass(schema_definition).do()
-  
-  console.log('We have a new class!', new_class['class'])
+  let new_class = await client.schema.classCreator().withClass(schema_definition).do();
+
+  console.log('We have a new class!', new_class['class']);
 }
+
+
+// run RAG/Generative Search query with single prompt
+async function singlePrompt(query: string, prompt: string) {
+  const response = await client.graphql.get()
+    .withClassName('JeopardyQuestion')
+    .withFields('question category answer')
+    .withNearText({
+      concepts: [query],
+    })
+    .withGenerate({
+      singlePrompt: prompt,
+    })
+    .withLimit(2)
+    .do();
+
+  console.log('Single Prompt response:', JSON.stringify(response, null, 2));
+}
+
+// run RAG/Generative Search query as a grouped Task
+async function GroupedTask(query: string, prompt: string, properties?: string[]) {
+  let response = await client.graphql.get()
+    .withClassName('JeopardyQuestion')
+    .withFields('question category answer')
+    .withNearText({
+      concepts: [query],
+    })
+    .withGenerate({
+      groupedTask: prompt,
+      groupedProperties: properties
+    })
+    .do();
+
+  let groupedtask_answer = response["data"]["Get"]["JeopardyQuestion"][0]["_additional"]["generate"]["groupedResult"];
+  console.log(`Grouped Task response for query (${query})`, groupedtask_answer);
+}
+
+
+async function runFullExample() {
+  // comment this the line bellow if you don't want your class to be deleted each run.
+  await deleteCollection();
+  if (await collectionExists() == false) {
+    // lets create and import our collection
+    await createCollection();
+    await importData();
+  }
+
+  await singlePrompt('Elephants', 'Turn the following Jeopardy question into a Facebook Ad: {question}.');
+  await GroupedTask('Animals', 'Explain why these Jeopardy questions are under the Animals category.');
+}
+
+runFullExample();
+
+// ------------------------- Helper functions
+
+// Helper function to check if collection exists
+async function collectionExists() {
+  return client.schema.exists('JeopardyQuestion');
+}
+
+// Helper function to delete the collection
+async function deleteCollection() {
+  // Delete the collection if it already exists
+  if (await collectionExists()) {
+    console.log('DELETING');
+    await client.schema.classDeleter().withClassName('JeopardyQuestion').do();
+  }
+}
+
 
 // import data into your collection
 async function importData() {
   // now is time to import some data
   // first, let's grab our Jeopardy Questions from the interwebs
-  
-  const url = 'https://raw.githubusercontent.com/weaviate/weaviate-examples/main/jeopardy_small_dataset/jeopardy_tiny.json'
-  const jeopardy_questions = await axios.get(url)
+
+  const url = 'https://raw.githubusercontent.com/weaviate/weaviate-examples/main/jeopardy_small_dataset/jeopardy_tiny.json';
+  const jeopardy_questions = await axios.get(url);
 
   let counter = 0;
   let batcher = client.batch.objectsBatcher();
@@ -150,11 +152,9 @@ async function importData() {
   }
 
   // push the remaining batch of objects
-  if (counter>0) {
+  if (counter > 0) {
     await batcher.do();
   }
 
   console.log('Data Imported');
 }
-
-

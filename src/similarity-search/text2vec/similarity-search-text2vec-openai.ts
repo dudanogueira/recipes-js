@@ -19,53 +19,76 @@ const client: WeaviateClient = weaviate.client({
   headers: { 'X-OpenAI-Api-Key': process.env.OPENAI_API_KEY },  // Replace with your inference API key
 });
 
-// run RAG/Generative Search query with single prompt
-async function singlePrompt(query: string, prompt: string) {
-  const response = await client.graphql.get()
-    .withClassName('JeopardyQuestion')
-    .withFields('question category answer')
-    .withNearText({
-      concepts: [query],
-    })
-    .withGenerate({
-      singlePrompt: prompt,
-    })
+
+async function SimilaritySearchNearText(concepts: string[]) {
+  return await client
+    .graphql
+    .get()
+    .withClassName("JeopardyQuestion")
+    .withFields("question answer category _additional { distance id }")
+    .withNearText({ "concepts": concepts })
     .withLimit(2)
     .do();
-
-  console.log('Single Prompt response:', JSON.stringify(response, null, 2));
 }
 
-// run RAG/Generative Search query as a grouped Task
-async function GroupedTask(query: string, prompt: string, properties?: string[]) {
-  let response = await client.graphql.get()
-    .withClassName('JeopardyQuestion')
-    .withFields('question category answer')
-    .withNearText({
-      concepts: [query],
-    })
-    .withGenerate({
-      groupedTask: prompt,
-      groupedProperties: properties
-    })
+async function SimilaritySearchNearObject(id: string) {
+  return await client
+    .graphql
+    .get()
+    .withClassName("JeopardyQuestion")
+    .withFields("question answer category _additional { distance id }")
+    .withNearObject({ id: id })
+    .withLimit(2)
     .do();
-
-  let groupedtask_answer = response["data"]["Get"]["JeopardyQuestion"][0]["_additional"]["generate"]["groupedResult"];
-  console.log(`Grouped Task response for query (${query})`, groupedtask_answer);
 }
 
+async function SimilaritySearchNearVector(vector: number[]) {
+  return await client
+    .graphql
+    .get()
+    .withClassName("JeopardyQuestion")
+    .withFields("question answer category _additional { distance id }")
+    .withNearVector({ vector: vector })
+    .withLimit(2)
+    .do();
+}
 
 async function runFullExample() {
   // comment this the line bellow if you don't want your class to be deleted each run.
   await deleteCollection();
-  if(await collectionExists() == false) {
+  if (await collectionExists() == false) {
     // lets create and import our collection
     await createCollection();
     await importData();
   }
+  // Near Text example
+  let concepts = ["question about animals"];
+  let near_text_response = await SimilaritySearchNearText(concepts);
+  console.log("Near Text objects for:", concepts, JSON.stringify(near_text_response, null, 2));
 
-  await singlePrompt('Elephants', 'Turn the following Jeopardy question into a Facebook Ad: {question}.');
-  await GroupedTask('Animals', 'Explain why these Jeopardy questions are under the Animals category.');
+  // Near Object example
+  // lets store the id of our first match
+  let top_match_id = near_text_response.data["Get"]["JeopardyQuestion"][0]["_additional"]["id"];
+  // lets search the two elements closests to our top object
+  let near_object_response = await SimilaritySearchNearObject(top_match_id);
+  console.log("Closest 2 objects to id:", top_match_id, JSON.stringify(near_object_response, null, 2));
+  // now let's search the nearest objects close to a vector
+  // first, let's grab a vector
+  let with_vector_query = await client
+    .graphql
+    .get()
+    .withClassName("JeopardyQuestion")
+    .withFields("_additional { vector id }")
+    .withNearText({ "concepts": ["big sized mammals"] })
+    .withLimit(2)
+    .do();
+  let vector = with_vector_query.data["Get"]["JeopardyQuestion"][0]["_additional"]["vector"];
+  let id = with_vector_query.data["Get"]["JeopardyQuestion"][0]["_additional"]["id"];
+  console.log("This is our vector (truncated)", vector.slice(0, 10), "...");
+  console.log("It has this ID:", id);
+  // now let's search for it
+  let near_vector_response = await SimilaritySearchNearVector(vector);
+  console.log("The two closest objects from this vector: ", JSON.stringify(near_vector_response, null, 2));
 }
 
 runFullExample();
@@ -80,7 +103,7 @@ async function collectionExists() {
 // Helper function to delete the collection
 async function deleteCollection() {
   // Delete the collection if it already exists
-  if(await collectionExists()) {
+  if (await collectionExists()) {
     console.log('DELETING');
     await client.schema.classDeleter().withClassName('JeopardyQuestion').do();
   }
@@ -118,6 +141,7 @@ async function createCollection() {
   }
   // let's create it
   let new_class = await client.schema.classCreator().withClass(schema_definition).do();
+
   console.log('We have a new class!', new_class['class']);
 }
 
@@ -125,8 +149,8 @@ async function createCollection() {
 async function importData() {
   // now is time to import some data
   // first, let's grab our Jeopardy Questions from the interwebs
-  
-  const url = 'https://raw.githubusercontent.com/weaviate/weaviate-examples/main/jeopardy_small_dataset/jeopardy_tiny.json';
+
+  const url = 'https://raw.githubusercontent.com/weaviate/weaviate-examples/main/jeopardy_small_dataset/jeopardy_tiny.json'
   const jeopardy_questions = await axios.get(url);
 
   let counter = 0;
@@ -136,7 +160,6 @@ async function importData() {
     batcher = batcher.withObject({
       class: 'JeopardyQuestion',
       properties: dataObj,
-      // tenant: 'tenantA'  // If multi-tenancy is enabled, specify the tenant to which the object will be added.
     });
 
     // push a batch of 5 objects
@@ -148,9 +171,11 @@ async function importData() {
   }
 
   // push the remaining batch of objects
-  if (counter>0) {
+  if (counter > 0) {
     await batcher.do();
   }
 
   console.log('Data Imported');
 }
+
+

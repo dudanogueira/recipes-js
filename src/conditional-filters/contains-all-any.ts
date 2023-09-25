@@ -53,18 +53,18 @@ async function runFullExample() {
 
     // ContainsAll examples for tags
     const docs_tags_bc = await searchAll(["tagB", "tagC"], ["tags"]);
-    console.log("Docs that contains ALL provided tags: tagB and tagC:", JSON.stringify(docs_tags_bc, null, 2))
+    console.log("Docs that contains ALL provided tags: tagB and tagC:", JSON.stringify(docs_tags_bc, null, 2));
 
     const docs_tags_ac = await searchAll(["tagA", "tagC"], ["tags"]);
-    console.log("Docs that contains ALL provided tags: tagA and tagC:", JSON.stringify(docs_tags_ac, null, 2))
+    console.log("Docs that contains ALL provided tags: tagA and tagC:", JSON.stringify(docs_tags_ac, null, 2));
 
     const docs_tags_ad = await searchAll(["tagA", "tagD"], ["tags"]);
     // this will return an empty response, as there is no document with tagD
-    console.log("Docs that contains ALL provided tags: tagA and tagD:", JSON.stringify(docs_tags_ad, null, 2))
+    console.log("Docs that contains ALL provided tags: tagA and tagD:", JSON.stringify(docs_tags_ad, null, 2));
 
     // ContainsAny example tags
     const docs_tags_AW = await searchAny(["tagA", "tagW"], ["tags"]);
-    console.log("Docs that contains ANY of the tags: tagA and tagW:", JSON.stringify(docs_tags_AW, null, 2))
+    console.log("Docs that contains ANY of the tags: tagA and tagW:", JSON.stringify(docs_tags_AW, null, 2));
 
     // TODO: check better way for this kind of search
     // If you want to get the Documents that has exactly tagB and tagC, 
@@ -82,7 +82,7 @@ async function runFullExample() {
 
 }
 
-runFullExample()
+runFullExample();
 
 // ------------------------- Helper functions
 // Create a new collection for your data and vectors
@@ -107,8 +107,8 @@ async function createCollection() {
         ],
     }
     // let's create it
-    let new_class = await client.schema.classCreator().withClass(schema_definition).do()
-    console.log('We have a new class!', new_class['class'])
+    let new_class = await client.schema.classCreator().withClass(schema_definition).do();
+    console.log('We have a new class!', new_class['class']);
 }
 
 // Import data into your collection
@@ -137,14 +137,14 @@ async function importData() {
 
 // Check if collection exists
 async function collectionExists() {
-    return client.schema.exists('Document')
+    return client.schema.exists('Document');
 }
 
 // Helper function to delete the collection
 async function deleteCollection() {
     // Delete the collection if it already exists
     if (await collectionExists()) {
-        console.log('DELETING')
+        console.log('DELETING');
         await client.schema.classDeleter().withClassName('Document').do();
     }
 }
