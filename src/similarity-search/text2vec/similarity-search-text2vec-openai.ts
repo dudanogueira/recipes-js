@@ -26,7 +26,10 @@ async function SimilaritySearchNearText(concepts: string[]) {
     .get()
     .withClassName("JeopardyQuestion")
     .withFields("question answer category _additional { distance id }")
-    .withNearText({ "concepts": concepts })
+    .withNearText({
+      "concepts": concepts,
+      moveAwayFrom: { concepts: ["reptiles"], force: 1 } // let's move away from reptiles with all the force
+    })
     .withLimit(2)
     .do();
 }
