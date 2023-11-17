@@ -1,3 +1,3 @@
 # Multi-tenancy
 
-To find out more about [Multi-tenancy](https://weaviate.io/developers/weaviate/manage-data/multi-tenancy#enable-multitenancy) in the Weaviate Documentation.
+Find out more about [Multi-tenancy](https://weaviate.io/developers/weaviate/manage-data/multi-tenancy#enable-multitenancy) in the Weaviate Documentation.
