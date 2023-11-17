@@ -11,9 +11,9 @@
     "lab": "npm run build && node build/lab.js",
     "generative-search/openai": "npm run build && node build/generative-search/generative-search-openai.js",
     "generative-search/cohere": "npm run build && node build/generative-search/generative-search-cohere.js",
-    "conditional-filters/containsany-all-any": "npm run build && node build/conditional-filters/contains-all-any.js",
+    "conditional-filters/contains-all-any": "npm run build && node build/conditional-filters/contains-all-any.js",
     "multi-tenancy/example": "npm run build && node build/multi-tenancy/example.js",
-    "similarity-search/text2vec/openai": "npm run build && node build/similarity-search/text2vec/similarity-search-text2vec-openai.js"
+    "similarity-search/text2vec/openai": "npm run build && node build/similarity-search/text2vec/similarity-search-openai.js"
   },
   "keywords": [],
   "author": "",

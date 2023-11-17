@@ -63,7 +63,7 @@ current available recipes:
 - `npm run generative-search/openai`
 - `npm run generative-search/cohere`
 - `npm run similarity-search/text2vec/openai`
-- `npm run conditional-filters/containsany-all-any`
+- `npm run conditional-filters/contains-all-any`
 - `npm run multi-tenancy/example`
 - _more coming soon!_
 </details>
