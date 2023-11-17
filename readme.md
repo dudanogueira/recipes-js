@@ -3,62 +3,10 @@ This repo covers end-to-end examples on the various features and integrations wi
 
 ⚠️ Before getting started, you need to follow the installation [instructions below]() detailed in the setup section of this document. You will need the setup completed to successfully run the recipes.
 
-
-Here is an outline of the concepts this repository covers:
-
-### Similarity Search 🔎
-[Similarity Search]() shows how to run `nearText`, `nearObject` and `nearVector` queries in Weaviate. It is divided by the different providers:
-
-* [Cohere]() - coming soon ⏳
-* [Contextionary]() - coming soon ⏳
-* [HuggingFace]() - coming soon ⏳
-* [OpenAI]() - `npm run similarity-search/text2vec/openai`
-* [PaLM]() - coming soon ⏳
-* [Transformers]() - coming soon ⏳
-
-### Hybrid Search ⚖️
-[Hybrid Search]() allows you to combine keyword and vector search. The notebook covers how to run a hybrid search query, search on a specific property, add in a `where` filter, and how to search with an embedding. It is divided by the different providers:
-
-* [Cohere]() - coming soon ⏳
-* [Contextionary]() - coming soon ⏳
-* [HuggingFace]() - coming soon ⏳
-* [OpenAI]() - coming soon ⏳
-* [PaLM]() - coming soon ⏳
-* [Transformers]() - coming soon ⏳
-
-### Generative Search ⌨️
-[Generative Search]() allows you to improve your search results by piping them through LLM models. It is divided by the different providers:
-
-* [Cohere]() - `npm run generative-search/cohere`
-* [OpenAI]() - `npm run generative-search/openai`
-* [PaLM]() - coming soon ⏳
-
-### Integrations 🤝
-[Integrations](https://github.com/weaviate/recipes/tree/main/integrations) with Weaviate
-
-* LlamaIndex
-  * [Episode 1: Data Loaders]() - coming soon ⏳
-  * [Episode 2: Indexes]() - coming soon ⏳
-  * [Simple Query Engine]() - coming soon ⏳
-  * [Sub Question Query Engine]() - coming soon ⏳
-
-* Llama 2 Demo
-  * [Quick demo on using the Llama 2 model using Replicate and LlamaIndex]() - coming soon ⏳
-
-* GPTCache
-  * [GPTCache notebook]() - coming soon ⏳
-
-### Ranking 🏅
-[Ranking]() in Weaviate
-* [Cohere Rerank]() - coming soon ⏳
-
-## Feedback ❓
-Please note this is an ongoing project, and updates will be made frequently. If you have a feature you would like to see, please drop it in the [Weaviate Forum](https://forum.weaviate.io/c/general/4).
-
-
-## Setup 🚀
-
-### 1. Install npm packages
+<details>
+  <summary>Setup Instructions 🚀 </summary>
+  
+  ### 1. Install npm packages
 Clone this repository, and install dependencies
 
 ```
@@ -121,3 +69,56 @@ current available recipes:
 - `npm run classification/knn`
 - `npm run data-with-vectors`
 - _more coming soon!_
+</details>
+
+
+Here is an outline of the concepts this repository covers:
+
+### Similarity Search 🔎
+[Similarity Search]() shows how to run `nearText`, `nearObject` and `nearVector` queries in Weaviate. It is divided by the different providers:
+
+* [Cohere]() - coming soon ⏳
+* [Contextionary]() - coming soon ⏳
+* [HuggingFace]() - coming soon ⏳
+* [OpenAI]() - `npm run similarity-search/text2vec/openai`
+* [PaLM]() - coming soon ⏳
+* [Transformers]() - coming soon ⏳
+
+### Hybrid Search ⚖️
+[Hybrid Search]() allows you to combine keyword and vector search. The notebook covers how to run a hybrid search query, search on a specific property, add in a `where` filter, and how to search with an embedding. It is divided by the different providers:
+
+* [Cohere]() - coming soon ⏳
+* [Contextionary]() - coming soon ⏳
+* [HuggingFace]() - coming soon ⏳
+* [OpenAI]() - coming soon ⏳
+* [PaLM]() - coming soon ⏳
+* [Transformers]() - coming soon ⏳
+
+### Generative Search ⌨️
+[Generative Search]() allows you to improve your search results by piping them through LLM models. It is divided by the different providers:
+
+* [Cohere]() - `npm run generative-search/cohere`
+* [OpenAI]() - `npm run generative-search/openai`
+* [PaLM]() - coming soon ⏳
+
+### Integrations 🤝
+[Integrations](https://github.com/weaviate/recipes/tree/main/integrations) with Weaviate
+
+* LlamaIndex
+  * [Episode 1: Data Loaders]() - coming soon ⏳
+  * [Episode 2: Indexes]() - coming soon ⏳
+  * [Simple Query Engine]() - coming soon ⏳
+  * [Sub Question Query Engine]() - coming soon ⏳
+
+* Llama 2 Demo
+  * [Quick demo on using the Llama 2 model using Replicate and LlamaIndex]() - coming soon ⏳
+
+* GPTCache
+  * [GPTCache notebook]() - coming soon ⏳
+
+### Ranking 🏅
+[Ranking]() in Weaviate
+* [Cohere Rerank]() - coming soon ⏳
+
+## Feedback ❓
+Please note this is an ongoing project, and updates will be made frequently. If you have a feature you would like to see, please drop it in the [Weaviate Forum](https://forum.weaviate.io/c/general/4).
