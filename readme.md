@@ -24,7 +24,7 @@ Considering you already have docker installed, you can run:
 ```
 docker compose up -d
 ``` 
-**IMPORTANT:** make sure to define the environment variables before runnig docker
+**IMPORTANT:** make sure to define the environment variables before running Docker
 
 ### 3. Define environment variables
 [get your OPENAI key here](https://platform.openai.com/account/api-keys)
@@ -39,8 +39,8 @@ If you are using docker, you can keep it like:
 ```
 WEAVIATE_SCHEME_URL=http
 WEAVIATE_URL=localhost:8080
-OPENAI_APIKEY=<your openai apikey>
-COHERE_APIKEY=<your cohere apikey>
+OPENAI_API_KEY=<your openai apikey>
+COHERE_API_KEY=<your cohere apikey>
 ```
 if you are using WCS, you can keep it like:
 
@@ -48,8 +48,8 @@ if you are using WCS, you can keep it like:
 WEAVIATE_SCHEME_URL=https
 WEAVIATE_URL=<yourcluster.weaviate.network>
 WEAVIATE_API_KEY=<your_apikey>
-OPENAI_APIKEY=<your openai apikey>
-COHERE_APIKEY=<your cohere apikey>
+OPENAI_API_KEY=<your openai apikey>
+COHERE_API_KEY=<your cohere apikey>
 ```
 
 ### 4. Run a Recipe!
