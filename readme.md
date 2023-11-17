@@ -1,26 +1,84 @@
-# Weaviate JS Recipes
+# Welcome to the Weaviate Javascript recipes repository!
+This repo covers end-to-end examples on the various features and integrations with [Weaviate](www.weaviate.io) for Javascript Developers! 
 
-## 1. Install npm packages
-Clone this repository, and install dependencies:
+⚠️ Before getting started, you need to follow the installation [instructions below]() detailed in the setup section of this document. You will need the setup completed to successfully run the recipes.
+
+
+Here is an outline of the concepts this repository covers:
+
+### Similarity Search 🔎
+[Similarity Search]() shows how to run `nearText`, `nearObject` and `nearVector` queries in Weaviate. It is divided by the different providers:
+
+* [Cohere]() - coming soon ⏳
+* [Contextionary]() - coming soon ⏳
+* [HuggingFace]() - coming soon ⏳
+* [OpenAI]() - `npm run similarity-search/text2vec/openai`
+* [PaLM]() - coming soon ⏳
+* [Transformers]() - coming soon ⏳
+
+### Hybrid Search ⚖️
+[Hybrid Search]() allows you to combine keyword and vector search. The notebook covers how to run a hybrid search query, search on a specific property, add in a `where` filter, and how to search with an embedding. It is divided by the different providers:
+
+* [Cohere]() - coming soon ⏳
+* [Contextionary]() - coming soon ⏳
+* [HuggingFace]() - coming soon ⏳
+* [OpenAI]() - coming soon ⏳
+* [PaLM]() - coming soon ⏳
+* [Transformers]() - coming soon ⏳
+
+### Generative Search ⌨️
+[Generative Search]() allows you to improve your search results by piping them through LLM models. It is divided by the different providers:
+
+* [Cohere]() - `npm run generative-search/cohere`
+* [OpenAI]() - `npm run generative-search/openai`
+* [PaLM]() - coming soon ⏳
+
+### Integrations 🤝
+[Integrations](https://github.com/weaviate/recipes/tree/main/integrations) with Weaviate
+
+* LlamaIndex
+  * [Episode 1: Data Loaders]() - coming soon ⏳
+  * [Episode 2: Indexes]() - coming soon ⏳
+  * [Simple Query Engine]() - coming soon ⏳
+  * [Sub Question Query Engine]() - coming soon ⏳
+
+* Llama 2 Demo
+  * [Quick demo on using the Llama 2 model using Replicate and LlamaIndex]() - coming soon ⏳
+
+* GPTCache
+  * [GPTCache notebook]() - coming soon ⏳
+
+### Ranking 🏅
+[Ranking]() in Weaviate
+* [Cohere Rerank]() - coming soon ⏳
+
+## Feedback ❓
+Please note this is an ongoing project, and updates will be made frequently. If you have a feature you would like to see, please drop it in the [Weaviate Forum](https://forum.weaviate.io/c/general/4).
+
+
+## Setup 🚀
+
+### 1. Install npm packages
+Clone this repository, and install dependencies
 
 ```
 npm install
 ```
-## 2. Choose where to run Weaviate
+### 2. Choose where to run Weaviate
 
-### 2.1 Run in Weaviate Cloud Service
+#### 2.1 Run in Weaviate Cloud Service
 
 Head to [WCS](https://console.weaviate.cloud/), where you can easily create a free sandbox cluster. 
 Take note of your `cluster url` and `apiKey`
 
-### 2.2 Run locally using Docker
+#### 2.2 Run locally using Docker
 Considering you already have docker installed, you can run:
 ```
 docker compose up -d
 ``` 
 **IMPORTANT:** make sure to define the environment variables before runnig docker
 
-## 3. Define environment variables
+### 3. Define environment variables
 [get your OPENAI key here](https://platform.openai.com/account/api-keys)
 
 [get your COHERE key here](https://dashboard.cohere.com/api-keys)
@@ -46,7 +104,7 @@ OPENAI_APIKEY=<your openai apikey>
 COHERE_APIKEY=<your cohere apikey>
 ```
 
-## 4. Run a Recipe!
+### 4. Run a Recipe!
 
 ```
 npm run <recipe>
