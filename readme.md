@@ -50,6 +50,8 @@ WEAVIATE_URL=<yourcluster.weaviate.network>
 WEAVIATE_API_KEY=<your_apikey>
 OPENAI_API_KEY=<your openai apikey>
 COHERE_API_KEY=<your cohere apikey>
+HUGGING_FACE_API_KEY=<your huggingface apikey>
+PALM_API_KEY=<your palm apikey>
 ```
 
 ### 4. Run a Recipe!
@@ -74,9 +76,9 @@ Here is an outline of the concepts this repository covers:
 ### Similarity Search 🔎
 [Similarity Search]() shows how to run `nearText`, `nearObject` and `nearVector` queries in Weaviate. It is divided by the different providers:
 
-* [Cohere]() - coming soon ⏳
+* [Cohere]() - `npm run similarity-search/text2vec/cohere`
 * [Contextionary]() - coming soon ⏳
-* [HuggingFace]() - coming soon ⏳
+* [HuggingFace]() - `npm run similarity-search/text2vec/hugging-face`
 * [OpenAI]() - `npm run similarity-search/text2vec/openai`
 * [PaLM]() - coming soon ⏳
 * [Transformers]() - coming soon ⏳

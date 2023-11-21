@@ -13,7 +13,13 @@
     "generative-search/cohere": "npm run build && node build/generative-search/generative-search-cohere.js",
     "conditional-filters/contains-all-any": "npm run build && node build/conditional-filters/contains-all-any.js",
     "multi-tenancy/example": "npm run build && node build/multi-tenancy/example.js",
-    "similarity-search/text2vec/openai": "npm run build && node build/similarity-search/text2vec/similarity-search-openai.js"
+    "similarity-search/text2vec/openai": "npm run build && node build/similarity-search/text2vec/similarity-search-openai.js",
+    "similarity-search/text2vec/cohere": "npm run build && node build/similarity-search/text2vec/similarity-search-cohere.js",
+    "similarity-search/text2vec/hugging-face": "npm run build && node build/similarity-search/text2vec/similarity-search-hugging-face.js",
+    "similarity-search/text2vec/transformers": "npm run build && node build/similarity-search/text2vec/similarity-search-transformers.js",
+    "similarity-search/text2vec/palm": "npm run build && node build/similarity-search/text2vec/similarity-search-palm.js",
+    "similarity-search/text2vec/contextionary": "npm run build && node build/similarity-search/text2vec/similarity-search-contextionary.js"
+
   },
   "keywords": [],
   "author": "",
