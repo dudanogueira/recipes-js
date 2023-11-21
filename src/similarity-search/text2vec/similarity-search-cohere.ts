@@ -8,7 +8,7 @@ require('dotenv').config();
 // const client: WeaviateClient = weaviate.client({
 //     scheme: 'http',
 //     host: 'localhost:8080',
-//     headers: { 'X-OpenAI-Api-Key': <YOUR-OPENAI_API_KEY> },  // Replace with your inference API key
+//     headers: { 'X-COHERE-Api-Key': <YOUR_COHERE_API_KEY> },  // Replace with your inference API key
 // });
 
 // in order to work with ENVIRONMENT VARIABLES and use an APIKEY, you can use
@@ -16,11 +16,11 @@ const client: WeaviateClient = weaviate.client({
   scheme: process.env.WEAVIATE_SCHEME_URL || 'http', // Replace with https if using WCS
   host: process.env.WEAVIATE_URL || 'localhost:8080', // Replace with your Weaviate URL
   apiKey: new ApiKey(process.env.WEAVIATE_API_KEY || 'YOUR-WEAVIATE-API-KEY'), // Replace with your Weaviate API key
-  headers: { 'X-OpenAI-Api-Key': process.env.OPENAI_API_KEY },  // Replace with your inference API key
+  headers: { 'X-COHERE-Api-Key': process.env.COHERE_API_KEY },  // Replace with your inference API key
 });
 
 
-async function SimilaritySearchNearText(concepts: string[]) {
+async function similaritySearchNearText(concepts: string[]) {
   return await client
     .graphql
     .get()
@@ -34,7 +34,7 @@ async function SimilaritySearchNearText(concepts: string[]) {
     .do();
 }
 
-async function SimilaritySearchNearObject(id: string) {
+async function similaritySearchNearObject(id: string) {
   return await client
     .graphql
     .get()
@@ -45,7 +45,7 @@ async function SimilaritySearchNearObject(id: string) {
     .do();
 }
 
-async function SimilaritySearchNearVector(vector: number[]) {
+async function similaritySearchNearVector(vector: number[]) {
   return await client
     .graphql
     .get()
@@ -66,14 +66,14 @@ async function runFullExample() {
   }
   // Near Text example
   let concepts = ["question about animals"];
-  let near_text_response = await SimilaritySearchNearText(concepts);
+  let near_text_response = await similaritySearchNearText(concepts);
   console.log("Near Text objects for:", concepts, JSON.stringify(near_text_response, null, 2));
 
   // Near Object example
   // lets store the id of our first match
   let top_match_id = near_text_response.data["Get"]["JeopardyQuestion"][0]["_additional"]["id"];
   // lets search the two elements closests to our top object
-  let near_object_response = await SimilaritySearchNearObject(top_match_id);
+  let near_object_response = await similaritySearchNearObject(top_match_id);
   console.log("Closest 2 objects to id:", top_match_id, JSON.stringify(near_object_response, null, 2));
   // now let's search the nearest objects close to a vector
   // first, let's grab a vector
@@ -90,7 +90,7 @@ async function runFullExample() {
   console.log("This is our vector (truncated)", vector.slice(0, 10), "...");
   console.log("It has this ID:", id);
   // now let's search for it
-  let near_vector_response = await SimilaritySearchNearVector(vector);
+  let near_vector_response = await similaritySearchNearVector(vector);
   console.log("The two closest objects from this vector: ", JSON.stringify(near_vector_response, null, 2));
 }
 
@@ -118,12 +118,13 @@ async function createCollection() {
   const schema_definition = {
     class: 'JeopardyQuestion',
     description: 'List of jeopardy questions',
-    vectorizer: 'text2vec-openai',
-    moduleConfig: {
-      'generative-openai': {
-        'model': 'gpt-3.5-turbo',  // Optional - Defaults to `gpt-3.5-turbo`
-      }
-    },
+    vectorizer: "text2vec-cohere",
+           moduleConfig: { // specify the vectorizer and model type you're using
+               "text2vec-cohere": { 
+                    "model": "embed-multilingual-v2.0", // defaults to embed-multilingual-v2.0 if not set
+                    "truncate": "RIGHT", // defaults to RIGHT if not set 
+                }
+           },
     properties: [
       {
         name: 'Category',
