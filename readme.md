@@ -61,4 +61,5 @@ current available recipes:
 - `npm run multi-tenancy/example`
 - `npm run classification/zeroshot`
 - `npm run classification/knn`
+- `npm run data-with-vectors`
 - _more coming soon!_
