@@ -9,7 +9,7 @@ services:
     - '8080'
     - --scheme
     - http
-    image: semitechnologies/weaviate:1.21.3
+    image: semitechnologies/weaviate:1.22.4
     ports:
     - 8080:8080
     volumes:
@@ -24,6 +24,7 @@ services:
       PERSISTENCE_DATA_PATH: '/var/lib/weaviate'
       DEFAULT_VECTORIZER_MODULE: 'text2vec-openai'
       ENABLE_MODULES: 'text2vec-openai,text2vec-cohere,generative-openai,generative-cohere,text2vec-transformers'
+      TRANSFORMERS_INFERENCE_API: http://t2v-transformers:8080
       CLUSTER_HOSTNAME: 'node1'
       # Enables API key authentication.
       AUTHENTICATION_APIKEY_ENABLED: 'true'
