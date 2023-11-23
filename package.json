@@ -15,7 +15,8 @@
     "conditional-filters/containsany-all-any": "npm run build && node build/conditional-filters/contains-all-any.js",
     "multi-tenancy/example": "npm run build && node build/multi-tenancy/example.js",
     "similarity-search/text2vec/openai": "npm run build && node build/similarity-search/text2vec/similarity-search-text2vec-openai.js",
-    "classification/zeroshot": "npm run build && node build/classification/zero-shot/example.js"
+    "classification/zeroshot": "npm run build && node build/classification/zero-shot/example.js",
+    "classification/knn": "npm run build && node build/classification/knn/example.js"
   },
   "keywords": [],
   "author": "",
