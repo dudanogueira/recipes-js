@@ -59,4 +59,6 @@ current available recipes:
 - `npm run similarity-search/text2vec/openai`
 - `npm run conditional-filters/containsany-all-any`
 - `npm run multi-tenancy/example`
+- `npm run classification/zeroshot`
+- `npm run classification/knn`
 - _more coming soon!_
