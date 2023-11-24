@@ -8,15 +8,12 @@ require('dotenv').config();
 // const client: WeaviateClient = weaviate.client({
 //     scheme: 'http',
 //     host: 'localhost:8080',
-//     headers: { 'X-OpenAI-Api-Key': <YOUR-OPENAI_API_KEY> },  // Replace with your inference API key
 // });
 
 // in order to work with ENVIRONMENT VARIABLES and use an APIKEY, you can use
 const client: WeaviateClient = weaviate.client({
   scheme: process.env.WEAVIATE_SCHEME_URL || 'http', // Replace with https if using WCS
   host: process.env.WEAVIATE_URL || 'localhost:8080', // Replace with your Weaviate URL
-  apiKey: new ApiKey(process.env.WEAVIATE_API_KEY || 'YOUR-WEAVIATE-API-KEY'), // Replace with your Weaviate API key
-  headers: { 'X-OpenAI-Api-Key': process.env.OPENAI_API_KEY },  // Replace with your inference API key
 });
 
 
@@ -118,11 +115,12 @@ async function createCollection() {
   const schema_definition = {
     class: 'JeopardyQuestion',
     description: 'List of jeopardy questions',
-    moduleConfig: { // specify the vectorizer and model type you're using
-               "text2vec-transformers": { 
-                    "poolingStrategy": "masked_mean"
-                }
-           },
+    vectorizer: "text2vec-transformers",
+    moduleConfig: {
+      "text2vec-transformers": {
+        "vectorizeClassName": false
+      }
+    },
     properties: [
       {
         name: 'Category',

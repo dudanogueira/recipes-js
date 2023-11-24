@@ -121,9 +121,9 @@ async function createCollection() {
     vectorizer: "text2vec-palm",
            moduleConfig: { // specify the vectorizer and model type you're using
                "text2vec-palm": { 
-                    "projectId": "YOUR-GOOGLE-CLOUD-PROJECT-ID", // required. replace with your value: (e.g. "cloud-large-language-models")
-                    "apiEndpoint": "YOUR-API-ENDPOINT", // optional. defaults to "us-central1-aiplatform.googleapis.com".
-                    "modelId": "YOUR-GOOGLE-CLOUD-MODEL-ID" // optional. defaults to "textembedding-gecko".
+                    "projectId": "castle-379018", // required for vertex replace with your value: (e.g. "cloud-large-language-models"), not required for makersuite
+                    "apiEndpoint": "generativelanguage.googleapis.com", // optional. defaults to "us-central1-aiplatform.googleapis.com", use "generativelanguage.googleapis.com" for makersuite
+                    "modelId": "embedding-gecko-001" // optional. defaults to "textembedding-gecko", use "embedding-gecko-001" for makersuite
                 }
            },
     properties: [
