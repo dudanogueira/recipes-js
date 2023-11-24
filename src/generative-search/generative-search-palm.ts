@@ -95,14 +95,14 @@ async function createCollection() {
     vectorizer: "text2vec-palm",
     moduleConfig: { // specify the vectorizer and model type you're using
       "text2vec-palm": {
-        "projectId": "castle-379018", // required for vertex replace with your value: (e.g. "cloud-large-language-models"), not required for makersuite
-        "apiEndpoint": "generativelanguage.googleapis.com", // optional. defaults to "us-central1-aiplatform.googleapis.com", use "generativelanguage.googleapis.com" for makersuite
-        "modelId": "embedding-gecko-001" // optional. defaults to "textembedding-gecko", use "embedding-gecko-001" for makersuite
+        "projectId": "YOUR-GOOGLE-CLOUD-PROJECT-ID", // required for vertex replace with your value: (e.g. "cloud-large-language-models"), not required for makersuite
+        "apiEndpoint": "YOUR-API-ENDPOINT", // optional. defaults to "us-central1-aiplatform.googleapis.com", use "generativelanguage.googleapis.com" for makersuite
+        "modelId": "YOUR-GOOGLE-CLOUD-MODEL-ID" // optional. defaults to "textembedding-gecko", use "embedding-gecko-001" for makersuite
       },
       "generative-palm": {
-        "projectId": "castle-379018",    // Only required if using Vertex AI. Replace with your value: (e.g. "cloud-large-language-models")
-        "apiEndpoint": "generativelanguage.googleapis.com",             // Optional. Defaults to "us-central1-aiplatform.googleapis.
-        "modelId": "chat-bison-001",     // Optional. Defaults to `"chat-bison"` for Vertex AI and `"chat-bison-001"` for MakerSuite.
+        "projectId": "YOUR-GOOGLE-CLOUD-PROJECT-ID",    // Only required if using Vertex AI. Replace with your value: (e.g. "cloud-large-language-models")
+        "apiEndpoint": "YOUR-API-ENDPOINT", // Optional. Defaults to "us-central1-aiplatform.googleapis.
+        "modelId": "YOUR-GOOGLE-CLOUD-MODEL-ID",     // Optional. Defaults to `"chat-bison"` for Vertex AI and `"chat-bison-001"` for MakerSuite.
       }
     },
     properties: [
