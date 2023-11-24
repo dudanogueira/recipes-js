@@ -103,6 +103,12 @@ Here is an outline of the concepts this repository covers:
 * [OpenAI]() - `npm run generative-search/openai`
 * [PaLM]() - coming soon ⏳
 
+### Classification 🗂️
+[Classification](https://weaviate.io/developers/weaviate/api/rest/classification) allows you to classify data objects by predicting cross-references based on the semantic meaning of the data objects.
+
+* [Knn](https://weaviate.io/developers/weaviate/api/rest/classification#knn-classification) - `npm run classification/knn`
+* [Zero-Shot](https://weaviate.io/developers/weaviate/api/rest/classification#zero-shot-classification) - `npm run classification/zeroshot`
+
 ### Integrations 🤝
 [Integrations](https://github.com/weaviate/recipes/tree/main/integrations) with Weaviate
 
