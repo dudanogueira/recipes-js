@@ -1,7 +1,7 @@
 # Welcome to the Weaviate Javascript recipes repository!
 This repo covers end-to-end examples on the various features and integrations with [Weaviate](www.weaviate.io) for Javascript Developers! 
 
-⚠️ Before getting started, you need to follow the installation [instructions below]() detailed in the setup section of this document. You will need the setup completed to successfully run the recipes.
+⚠️ Before getting started, you need to follow the installation **Setup Instructions** detailed in the setup section of this document. You will need the setup completed to successfully run the recipes.
 
 <details>
   <summary>Setup Instructions 🚀 </summary>
