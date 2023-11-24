@@ -8,7 +8,7 @@ require('dotenv').config();
 // const client: WeaviateClient = weaviate.client({
 //     scheme: 'http',
 //     host: 'localhost:8080',
-//     headers: { 'X-Palm-Api-Key': <YOUR_PALM_API_KEY> },  // Replace with your inference API key
+//     headers: { 'X-COHERE-Api-Key': <YOUR-COHERE_API_KEY> },  // Replace with your inference API key
 // });
 
 // in order to work with ENVIRONMENT VARIABLES and use an APIKEY, you can use
@@ -16,7 +16,7 @@ const client: WeaviateClient = weaviate.client({
   scheme: process.env.WEAVIATE_SCHEME_URL || 'http', // Replace with https if using WCS
   host: process.env.WEAVIATE_URL || 'localhost:8080', // Replace with your Weaviate URL
   apiKey: new ApiKey(process.env.WEAVIATE_API_KEY || 'YOUR-WEAVIATE-API-KEY'), // Replace with your Weaviate API key
-  headers: { 'X-Palm-Api-Key': process.env.PALM_API_KEY },  // Replace with your inference API key
+  headers: { 'X-COHERE-Api-Key': process.env.COHERE_API_KEY },  // Replace with your inference API key
 });
 
 
@@ -118,14 +118,11 @@ async function createCollection() {
   const schema_definition = {
     class: 'JeopardyQuestion',
     description: 'List of jeopardy questions',
-    vectorizer: "text2vec-palm",
-           moduleConfig: { // specify the vectorizer and model type you're using
-               "text2vec-palm": { 
-                    "projectId": "YOUR-GOOGLE-CLOUD-PROJECT-ID", // required for vertex replace with your value: (e.g. "cloud-large-language-models"), not required for makersuite
-                    "apiEndpoint": "YOUR-API-ENDPOINT", // optional. defaults to "us-central1-aiplatform.googleapis.com", use "generativelanguage.googleapis.com" for makersuite
-                    "modelId": "YOUR-GOOGLE-CLOUD-MODEL-ID" // optional. defaults to "textembedding-gecko", use "embedding-gecko-001" for makersuite
-                }
-           },
+    "moduleConfig": { // configure the vectorizer
+      "text2vec-contextionary": { 
+           "vectorizeClassName": "false"
+       }
+  },
     properties: [
       {
         name: 'Category',
