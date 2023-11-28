@@ -12,7 +12,7 @@
     "generative-search/openai": "npm run build && node build/generative-search/generative-search-openai.js",
     "generative-search/cohere": "npm run build && node build/generative-search/generative-search-cohere.js",
     "generative-search/palm": "npm run build && node build/generative-search/generative-search-palm.js",
-    "conditional-filters/containsany-all-any": "npm run build && node build/conditional-filters/contains-all-any.js",
+    "conditional-filters/contains-all-any": "npm run build && node build/conditional-filters/contains-all-any.js",
     "classification/zeroshot": "npm run build && node build/classification/zero-shot/example.js",
     "classification/knn": "npm run build && node build/classification/knn/example.js",
     "data-with-vectors": "npm run build && node build/data-with-vectors/example.js",
@@ -20,10 +20,7 @@
     "similarity-search/text2vec/openai": "npm run build && node build/similarity-search/text2vec/similarity-search-openai.js",
     "similarity-search/text2vec/cohere": "npm run build && node build/similarity-search/text2vec/similarity-search-cohere.js",
     "similarity-search/text2vec/hugging-face": "npm run build && node build/similarity-search/text2vec/similarity-search-hugging-face.js",
-    "similarity-search/text2vec/transformers": "npm run build && node build/similarity-search/text2vec/similarity-search-transformers.js",
-    "similarity-search/text2vec/palm": "npm run build && node build/similarity-search/text2vec/similarity-search-palm.js",
-    "similarity-search/text2vec/contextionary": "npm run build && node build/similarity-search/text2vec/similarity-search-contextionary.js"
-
+    "similarity-search/text2vec/palm": "npm run build && node build/similarity-search/text2vec/similarity-search-palm.js"
   },
   "keywords": [],
   "author": "",

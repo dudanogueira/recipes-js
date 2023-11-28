@@ -80,10 +80,9 @@ Here is an outline of the concepts this repository covers:
 [Similarity Search]() shows how to run `nearText`, `nearObject` and `nearVector` queries in Weaviate. It is divided by the different providers:
 
 * [Cohere]() - `npm run similarity-search/text2vec/cohere`
-* [Contextionary]() - coming soon ⏳
 * [HuggingFace]() - `npm run similarity-search/text2vec/hugging-face`
 * [OpenAI]() - `npm run similarity-search/text2vec/openai`
-* [PaLM]() - coming soon ⏳
+* [PaLM]() - `npm run similarity-search/text2vec/palm`
 * [Transformers]() - coming soon ⏳
 
 ### Hybrid Search ⚖️
@@ -101,7 +100,7 @@ Here is an outline of the concepts this repository covers:
 
 * [Cohere]() - `npm run generative-search/cohere`
 * [OpenAI]() - `npm run generative-search/openai`
-* [PaLM]() - coming soon ⏳
+* [PaLM]() - `npm run generative-search/palm`
 
 ### Classification 🗂️
 [Classification](https://weaviate.io/developers/weaviate/api/rest/classification) allows you to classify data objects by predicting cross-references based on the semantic meaning of the data objects.

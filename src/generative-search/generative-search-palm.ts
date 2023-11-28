@@ -8,7 +8,7 @@ require('dotenv').config();
 // const client: WeaviateClient = weaviate.client({
 //     scheme: 'http',
 //     host: 'localhost:8080',
-//     headers: { 'X-Palm-Api-Key': <YOUR_PALM_API_KEY> },  // Replace with your inference API key
+//     headers: { 'X-Palm-Api-Key'': <YOUR_PALM_API_KEY> },  // Replace with your inference API key
 // });
 
 // in order to work with ENVIRONMENT VARIABLES and use an APIKEY, you can use
@@ -19,42 +19,41 @@ const client: WeaviateClient = weaviate.client({
   headers: { 'X-Palm-Api-Key': process.env.PALM_API_KEY },  // Replace with your inference API key
 });
 
-
-async function similaritySearchNearText(concepts: string[]) {
-  return await client
-    .graphql
-    .get()
-    .withClassName("JeopardyQuestion")
-    .withFields("question answer category _additional { distance id }")
+// run RAG/Generative Search query with single prompt
+async function singlePrompt(query: string, prompt: string) {
+  const response = await client.graphql.get()
+    .withClassName('JeopardyQuestion')
+    .withFields('question category answer')
     .withNearText({
-      "concepts": concepts,
-      moveAwayFrom: { concepts: ["reptiles"], force: 1 } // let's move away from reptiles with all the force
+      concepts: [query],
+    })
+    .withGenerate({
+      singlePrompt: prompt,
     })
     .withLimit(2)
     .do();
+
+  console.log('Single Prompt response:', JSON.stringify(response, null, 2));
 }
 
-async function similaritySearchNearObject(id: string) {
-  return await client
-    .graphql
-    .get()
-    .withClassName("JeopardyQuestion")
-    .withFields("question answer category _additional { distance id }")
-    .withNearObject({ id: id })
-    .withLimit(2)
+// run RAG/Generative Search query as a grouped Task
+async function GroupedTask(query: string, prompt: string, properties?: string[]) {
+  let response = await client.graphql.get()
+    .withClassName('JeopardyQuestion')
+    .withFields('question category answer')
+    .withNearText({
+      concepts: [query],
+    })
+    .withGenerate({
+      groupedTask: prompt,
+      groupedProperties: properties
+    })
     .do();
+
+  let groupedtask_answer = response["data"]["Get"]["JeopardyQuestion"][0]["_additional"]["generate"]["groupedResult"];
+  console.log(`Grouped Task response for query (${query})`, groupedtask_answer);
 }
 
-async function similaritySearchNearVector(vector: number[]) {
-  return await client
-    .graphql
-    .get()
-    .withClassName("JeopardyQuestion")
-    .withFields("question answer category _additional { distance id }")
-    .withNearVector({ vector: vector })
-    .withLimit(2)
-    .do();
-}
 
 async function runFullExample() {
   // comment this the line bellow if you don't want your class to be deleted each run.
@@ -64,34 +63,9 @@ async function runFullExample() {
     await createCollection();
     await importData();
   }
-  // Near Text example
-  let concepts = ["question about animals"];
-  let near_text_response = await similaritySearchNearText(concepts);
-  console.log("Near Text objects for:", concepts, JSON.stringify(near_text_response, null, 2));
 
-  // Near Object example
-  // lets store the id of our first match
-  let top_match_id = near_text_response.data["Get"]["JeopardyQuestion"][0]["_additional"]["id"];
-  // lets search the two elements closests to our top object
-  let near_object_response = await similaritySearchNearObject(top_match_id);
-  console.log("Closest 2 objects to id:", top_match_id, JSON.stringify(near_object_response, null, 2));
-  // now let's search the nearest objects close to a vector
-  // first, let's grab a vector
-  let with_vector_query = await client
-    .graphql
-    .get()
-    .withClassName("JeopardyQuestion")
-    .withFields("_additional { vector id }")
-    .withNearText({ "concepts": ["big sized mammals"] })
-    .withLimit(2)
-    .do();
-  let vector = with_vector_query.data["Get"]["JeopardyQuestion"][0]["_additional"]["vector"];
-  let id = with_vector_query.data["Get"]["JeopardyQuestion"][0]["_additional"]["id"];
-  console.log("This is our vector (truncated)", vector.slice(0, 10), "...");
-  console.log("It has this ID:", id);
-  // now let's search for it
-  let near_vector_response = await similaritySearchNearVector(vector);
-  console.log("The two closest objects from this vector: ", JSON.stringify(near_vector_response, null, 2));
+  await singlePrompt('Elephants', 'Turn the following Jeopardy question into a Facebook Ad: {question}.');
+  await GroupedTask('Animals', 'Explain why these Jeopardy questions are under the Animals category.');
 }
 
 runFullExample();
@@ -119,13 +93,18 @@ async function createCollection() {
     class: 'JeopardyQuestion',
     description: 'List of jeopardy questions',
     vectorizer: "text2vec-palm",
-           moduleConfig: { // specify the vectorizer and model type you're using
-               "text2vec-palm": { 
-                    "projectId": "YOUR-GOOGLE-CLOUD-PROJECT-ID", // required for vertex replace with your value: (e.g. "cloud-large-language-models"), not required for makersuite
-                    "apiEndpoint": "YOUR-API-ENDPOINT", // optional. defaults to "us-central1-aiplatform.googleapis.com", use "generativelanguage.googleapis.com" for makersuite
-                    "modelId": "YOUR-GOOGLE-CLOUD-MODEL-ID" // optional. defaults to "textembedding-gecko", use "embedding-gecko-001" for makersuite
-                }
-           },
+    moduleConfig: { // specify the vectorizer and model type you're using
+      "text2vec-palm": {
+        "projectId": "YOUR-GOOGLE-CLOUD-PROJECT-ID", // required for vertex replace with your value: (e.g. "cloud-large-language-models"), not required for makersuite
+        "apiEndpoint": "YOUR-API-ENDPOINT", // optional. defaults to "us-central1-aiplatform.googleapis.com", use "generativelanguage.googleapis.com" for makersuite
+        "modelId": "YOUR-GOOGLE-CLOUD-MODEL-ID" // optional. defaults to "textembedding-gecko", use "embedding-gecko-001" for makersuite
+      },
+      "generative-palm": {
+        "projectId": "YOUR-GOOGLE-CLOUD-PROJECT-ID",    // Only required if using Vertex AI. Replace with your value: (e.g. "cloud-large-language-models")
+        "apiEndpoint": "YOUR-API-ENDPOINT", // Optional. Defaults to "us-central1-aiplatform.googleapis.
+        "modelId": "YOUR-GOOGLE-CLOUD-MODEL-ID",     // Optional. Defaults to `"chat-bison"` for Vertex AI and `"chat-bison-001"` for MakerSuite.
+      }
+    },
     properties: [
       {
         name: 'Category',
@@ -146,7 +125,6 @@ async function createCollection() {
   }
   // let's create it
   let new_class = await client.schema.classCreator().withClass(schema_definition).do();
-
   console.log('We have a new class!', new_class['class']);
 }
 
@@ -155,7 +133,7 @@ async function importData() {
   // now is time to import some data
   // first, let's grab our Jeopardy Questions from the interwebs
 
-  const url = 'https://raw.githubusercontent.com/weaviate/weaviate-examples/main/jeopardy_small_dataset/jeopardy_tiny.json'
+  const url = 'https://raw.githubusercontent.com/weaviate/weaviate-examples/main/jeopardy_small_dataset/jeopardy_tiny.json';
   const jeopardy_questions = await axios.get(url);
 
   let counter = 0;
@@ -165,6 +143,7 @@ async function importData() {
     batcher = batcher.withObject({
       class: 'JeopardyQuestion',
       properties: dataObj,
+      // tenant: 'tenantA'  // If multi-tenancy is enabled, specify the tenant to which the object will be added.
     });
 
     // push a batch of 5 objects
@@ -182,5 +161,3 @@ async function importData() {
 
   console.log('Data Imported');
 }
-
-
