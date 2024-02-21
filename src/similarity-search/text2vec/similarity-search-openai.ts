@@ -64,19 +64,24 @@ async function runFullExample() {
     await createCollection();
     await importData();
   }
-  // Near Text example
+// Near Text example
   let concepts = ["question about animals"];
   let near_text_response = await similaritySearchNearText(concepts);
   console.log("Near Text objects for:", concepts, JSON.stringify(near_text_response, null, 2));
 
-  // Near Object example
-  // lets store the id of our first match
+// Near Object example
+// lets store the id of our first match
+
   let top_match_id = near_text_response.data["Get"]["JeopardyQuestion"][0]["_additional"]["id"];
-  // lets search the two elements closests to our top object
+
+// lets search the two elements closests to our top object
+
   let near_object_response = await similaritySearchNearObject(top_match_id);
   console.log("Closest 2 objects to id:", top_match_id, JSON.stringify(near_object_response, null, 2));
-  // now let's search the nearest objects close to a vector
-  // first, let's grab a vector
+
+// now let's search the nearest objects close to a vector
+// first, let's grab a vector
+
   let with_vector_query = await client
     .graphql
     .get()
@@ -89,7 +94,9 @@ async function runFullExample() {
   let id = with_vector_query.data["Get"]["JeopardyQuestion"][0]["_additional"]["id"];
   console.log("This is our vector (truncated)", vector.slice(0, 10), "...");
   console.log("It has this ID:", id);
-  // now let's search for it
+
+// now let's search for it
+
   let near_vector_response = await similaritySearchNearVector(vector);
   console.log("The two closest objects from this vector: ", JSON.stringify(near_vector_response, null, 2));
 }

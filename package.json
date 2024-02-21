@@ -20,7 +20,8 @@
     "similarity-search/text2vec/openai": "npm run build && node build/similarity-search/text2vec/similarity-search-openai.js",
     "similarity-search/text2vec/cohere": "npm run build && node build/similarity-search/text2vec/similarity-search-cohere.js",
     "similarity-search/text2vec/hugging-face": "npm run build && node build/similarity-search/text2vec/similarity-search-hugging-face.js",
-    "similarity-search/text2vec/palm": "npm run build && node build/similarity-search/text2vec/similarity-search-palm.js"
+    "similarity-search/text2vec/palm": "npm run build && node build/similarity-search/text2vec/similarity-search-palm.js",
+    "similarity-search/text2vec/openai-v2": "npm run build && node build/similarity-search/text2vec/similarity-search-openai-wcv3.js"
   },
   "keywords": [],
   "author": "",
@@ -30,12 +31,14 @@
     "nodemon": "^3.0.1",
     "rimraf": "^5.0.1",
     "ts-node": "^10.9.1",
+    "tsx": "^4.7.1",
     "typescript": "^5.2.2"
   },
   "dependencies": {
     "axios": "^1.5.0",
     "dotenv": "^16.3.1",
     "graphql": "^16.8.1",
+    "weaviate-client": "^3.0.0-beta.0",
     "weaviate-ts-client": "^1.5.0"
   }
 }
